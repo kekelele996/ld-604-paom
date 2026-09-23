@@ -6,5 +6,5 @@ export interface RepairTicket {
   priority: string;
   status: string;
   assigned_at: string;
-  restored_at: string;
+  restored_at: string | null;
 }

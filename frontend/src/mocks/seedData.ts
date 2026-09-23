@@ -1,3 +1,7 @@
+// 离线兜底数据：字段与后端种子保持一致，reported_at 相对启动时刻动态生成，保证 30 分钟窗口可演示。
+const now = Date.now();
+const minutesAgoIso = (minutes: number) => new Date(now - minutes * 60 * 1000).toISOString();
+
 export const mockData = {
   "gridAsset": [
     {
@@ -39,9 +43,13 @@ export const mockData = {
       "asset_id": 1,
       "fault_type": "VOLTAGE_LOW",
       "address_desc": "address desc 1",
-      "severity": "severity 1",
+      "severity": "MEDIUM",
+      "previous_severity": "",
       "report_channel": "report channel 1",
-      "status": "ASSIGNED"
+      "status": "OPEN",
+      "reported_at": minutesAgoIso(10),
+      "merged_count": 1,
+      "merged_into_id": null
     },
     {
       "id": 2,
@@ -50,9 +58,13 @@ export const mockData = {
       "asset_id": 2,
       "fault_type": "TRIP",
       "address_desc": "address desc 2",
-      "severity": "severity 2",
+      "severity": "LOW",
+      "previous_severity": "",
       "report_channel": "report channel 2",
-      "status": "ARRIVED"
+      "status": "OPEN",
+      "reported_at": minutesAgoIso(90),
+      "merged_count": 0,
+      "merged_into_id": null
     },
     {
       "id": 3,
@@ -61,9 +73,28 @@ export const mockData = {
       "asset_id": 3,
       "fault_type": "EQUIPMENT_DAMAGE",
       "address_desc": "address desc 3",
-      "severity": "severity 3",
+      "severity": "HIGH",
+      "previous_severity": "",
       "report_channel": "report channel 3",
-      "status": "WAIT_DISPATCH"
+      "status": "OPEN",
+      "reported_at": minutesAgoIso(5),
+      "merged_count": 0,
+      "merged_into_id": null
+    },
+    {
+      "id": 4,
+      "reporter_name": "reporter name 4",
+      "phone": "13800000004",
+      "asset_id": 1,
+      "fault_type": "VOLTAGE_LOW",
+      "address_desc": "address desc 4",
+      "severity": "LOW",
+      "previous_severity": "",
+      "report_channel": "report channel 4",
+      "status": "MERGED",
+      "reported_at": minutesAgoIso(8),
+      "merged_count": 0,
+      "merged_into_id": 1
     }
   ],
   "repairTicket": [
@@ -72,30 +103,30 @@ export const mockData = {
       "fault_report_id": 1,
       "team_id": 1,
       "dispatcher_id": 1,
-      "priority": "priority 1",
+      "priority": "URGENT",
       "status": "ASSIGNED",
-      "assigned_at": "2026-06-11T09:00:00Z",
-      "restored_at": "2026-06-11T09:00:00Z"
+      "assigned_at": minutesAgoIso(10),
+      "restored_at": null
     },
     {
       "id": 2,
       "fault_report_id": 2,
       "team_id": 2,
       "dispatcher_id": 2,
-      "priority": "priority 2",
-      "status": "ARRIVED",
-      "assigned_at": "2026-06-12T09:00:00Z",
-      "restored_at": "2026-06-12T09:00:00Z"
+      "priority": "ROUTINE",
+      "status": "RESTORED",
+      "assigned_at": minutesAgoIso(90),
+      "restored_at": minutesAgoIso(60)
     },
     {
       "id": 3,
       "fault_report_id": 3,
       "team_id": 3,
       "dispatcher_id": 3,
-      "priority": "priority 3",
+      "priority": "EXPRESS",
       "status": "WAIT_DISPATCH",
-      "assigned_at": "2026-06-13T09:00:00Z",
-      "restored_at": "2026-06-13T09:00:00Z"
+      "assigned_at": minutesAgoIso(5),
+      "restored_at": null
     }
   ],
   "crew": [
@@ -159,4 +190,4 @@ export const mockData = {
       "usage_status": "WAIT_DISPATCH"
     }
   ]
-} as const;
+};

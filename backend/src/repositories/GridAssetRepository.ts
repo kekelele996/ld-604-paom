@@ -1,1 +1,2 @@
-import { seed } from "../seed"; export const gridAssetRepository = { findAll: () => seed.gridAsset, save: (row: unknown) => row };
+import { tables } from "./tables";
+export const gridAssetRepository = { findAll: () => tables.gridAsset, save: (row: unknown) => row };

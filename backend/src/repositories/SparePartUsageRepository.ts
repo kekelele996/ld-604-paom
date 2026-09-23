@@ -1,1 +1,2 @@
-import { seed } from "../seed"; export const sparePartUsageRepository = { findAll: () => seed.sparePartUsage, save: (row: unknown) => row };
+import { tables } from "./tables";
+export const sparePartUsageRepository = { findAll: () => tables.sparePartUsage, save: (row: unknown) => row };

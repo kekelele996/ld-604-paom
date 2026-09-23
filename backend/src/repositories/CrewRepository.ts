@@ -1,1 +1,2 @@
-import { seed } from "../seed"; export const crewRepository = { findAll: () => seed.crew, save: (row: unknown) => row };
+import { tables } from "./tables";
+export const crewRepository = { findAll: () => tables.crew, save: (row: unknown) => row };

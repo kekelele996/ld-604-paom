@@ -18,7 +18,15 @@ CREATE TABLE IF NOT EXISTS fault_report (
   address_desc TEXT,
   severity TEXT,
   report_channel TEXT,
-  status TEXT
+  status TEXT,
+  -- 报修时间（ISO8601），用于 30 分钟重复合并窗口判定
+  reported_at TEXT,
+  -- 累计被并入本故障的重复报修次数（仅未关闭主故障累计）
+  merged_count INTEGER DEFAULT 0,
+  -- 升级前等级，未升级时为空
+  previous_severity TEXT,
+  -- 被并入的主故障 id，主故障自身为空
+  merged_into_id INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS repair_ticket (

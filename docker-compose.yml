@@ -26,6 +26,7 @@ services:
     env_file:
       - .env
     environment:
+      NODE_ENV: production
       PORT: 3000
       DB_HOST: db
       DB_PORT: 3306
@@ -33,6 +34,8 @@ services:
       DB_USER: ${DB_USER:-app_user}
       DB_PASSWORD: ${DB_PASSWORD:-app_password}
       JWT_SECRET: local-dev-secret
+      # 重复报修合并窗口（分钟），默认 30，需与 .env.example 同步
+      FAULT_MERGE_WINDOW_MINUTES: ${FAULT_MERGE_WINDOW_MINUTES:-30}
     ports:
       - "${BACKEND_PORT:-21104}:3000"
     depends_on:

@@ -10,6 +10,7 @@ import faultReportRoutes from "./routes/FaultReportRoutes";
 import repairTicketRoutes from "./routes/RepairTicketRoutes";
 import crewRoutes from "./routes/CrewRoutes";
 import sparePartUsageRoutes from "./routes/SparePartUsageRoutes";
+import testRoutes from "./routes/TestRoutes";
 
 const app = express();
 app.use(cors());
@@ -23,5 +24,6 @@ app.use("/api/fault-report", faultReportRoutes);
 app.use("/api/repair-ticket", repairTicketRoutes);
 app.use("/api/crew", crewRoutes);
 app.use("/api/spare-part-usage", sparePartUsageRoutes);
+app.use("/api/test", testRoutes);
 app.use(errorHandlerMiddleware);
 app.listen(config.port, () => console.log("grid-repair backend listening on", config.port));
