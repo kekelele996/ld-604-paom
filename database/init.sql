@@ -18,7 +18,13 @@ CREATE TABLE IF NOT EXISTS fault_report (
   address_desc TEXT,
   severity TEXT,
   report_channel TEXT,
-  status TEXT
+  status TEXT,
+  reported_at TEXT,
+  merged_into_id INTEGER NULL,
+  merged_count INTEGER NOT NULL DEFAULT 0,
+  severity_before TEXT NULL,
+  severity_upgraded_to TEXT NULL,
+  client_request_id TEXT NULL
 );
 
 CREATE TABLE IF NOT EXISTS repair_ticket (
@@ -29,7 +35,9 @@ CREATE TABLE IF NOT EXISTS repair_ticket (
   priority TEXT,
   status TEXT,
   assigned_at TEXT,
-  restored_at TEXT
+  restored_at TEXT,
+  priority_before TEXT NULL,
+  upgraded_from_severity TEXT NULL
 );
 
 CREATE TABLE IF NOT EXISTS crew (
@@ -61,3 +69,8 @@ CREATE TABLE IF NOT EXISTS audit_log (
   target_id TEXT,
   created_at TEXT
 );
+
+-- 30 分钟窗口内按资产查找未关闭主故障
+CREATE INDEX IF NOT EXISTS idx_fault_report_merge ON fault_report (asset_id, status, merged_into_id, reported_at);
+-- 幂等键：并发提交同一报修只合并一次
+CREATE UNIQUE INDEX IF NOT EXISTS uq_fault_report_client_request ON fault_report (client_request_id);

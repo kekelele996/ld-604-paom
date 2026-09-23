@@ -1,17 +1,43 @@
-import type { FaultReport } from "../types/FaultReport";
+import type { CreateFaultReportPayload, FaultReport, FaultReportDetail } from "../types/FaultReport";
 
+// 列表/响应默认结构：页面、store 不散写默认对象
 export const createDefaultFaultReport = (overrides: Partial<FaultReport> = {}): FaultReport => ({
-  id: 1 as never,
-  reporter_name: "reporter name 1" as never,
-  phone: "13800000001" as never,
-  asset_id: 1 as never,
-  fault_type: "VOLTAGE_LOW" as never,
-  address_desc: "address desc 1" as never,
-  severity: "severity 1" as never,
-  report_channel: "report channel 1" as never,
-  status: "ASSIGNED" as never,
+  id: 0,
+  reporter_name: "",
+  phone: "",
+  asset_id: 0,
+  fault_type: "OUTAGE",
+  address_desc: "",
+  severity: "MEDIUM",
+  report_channel: "HOTLINE",
+  status: "OPEN",
+  reported_at: new Date().toISOString(),
+  merged_into_id: null,
+  merged_count: 0,
+  severity_before: null,
+  severity_upgraded_to: null,
   ...overrides
 });
 
-export const createFaultReportForm = createDefaultFaultReport;
+// 登记表单初始值
+export const createFaultReportForm = (
+  assetId: number,
+  overrides: Partial<CreateFaultReportPayload> = {}
+): CreateFaultReportPayload => ({
+  reporter_name: "",
+  phone: "",
+  asset_id: assetId,
+  fault_type: "OUTAGE",
+  address_desc: "",
+  severity: "MEDIUM",
+  report_channel: "HOTLINE",
+  ...overrides
+});
+
 export const createFaultReportResponse = createDefaultFaultReport;
+
+export const createFaultReportDetail = (row: FaultReport): FaultReportDetail => ({
+  ...createDefaultFaultReport(row),
+  merged_reports: [],
+  tickets: []
+});

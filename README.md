@@ -57,6 +57,16 @@ backend/src/routes, controllers, services, models, repositories, middlewares, co
 - FaultType: constants/FaultType、types/FaultType、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
 - TicketStatus: constants/TicketStatus、types/TicketStatus、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
 - AssetHealthStatus: constants/AssetHealthStatus、types/AssetHealthStatus、constructors、logTemplates、errorMessages、筛选器、展示组件/控制器均有引用。
+- Severity（故障严重度 LOW/MEDIUM/HIGH/CRITICAL，只升不降）:
+  - 后端：`constants/Severity.ts`、`constants/TicketPriority.ts`、`constants/FaultStatus.ts`、`models/FaultReport`、`models/RepairTicket`、`services/FaultReportService`、`utils/faultReportValidator`、`constructors/*`、`seed.ts`。
+  - 前端：`constants/Severity.ts`、`constants/TicketPriority.ts`、`constants/FaultStatus.ts`、`types/FaultReport`、`types/RepairTicket`、`utils/formatters`、`constructors/*`、`stores/FaultReportStore`、`pages/FaultsPage.vue`、`components/common/StatusBadge.vue`、`components/common/PriorityTag.vue`、`mocks/seedData`。
+
+## 重复报修合并与严重度升级规则
+
+- 同一资产 30 分钟（`config/merge.ts` / 前端 `constants/FaultStatus.ts` 的 `MERGE_WINDOW_MINUTES`）内存在**未关闭（OPEN）主故障**时，新报修标记为 `MERGED` 并入原故障，主故障 `merged_count` 累加，**不另建工单**。
+- 新报修严重度更高时：主故障等级只升不降（`severity_before` / `severity_upgraded_to` 记录升级前后等级）；关联的**未复电**工单优先级随严重度只升不降（`priority_before` 留痕）；`RESTORED`/`CLOSED` 工单保持原样。
+- 并发提交同一报修：前端为每次提交生成 `client_request_id`（也可用 `x-idempotency-key` 请求头），后端串行事务 + 幂等键缓存保证**只合并一次**；事务内任何失败整体回滚，故障、工单和计数全部不变。
+- `GET /api/fault-report` 支持 `asset_id`、`status` 筛选；`GET /api/fault-report/:id` 返回 `merged_reports`（并入报修）和 `tickets`（已关联工单）。故障页按资产分组展示合并次数、升级前后等级与关联工单，提交/刷新后均以接口返回为准。
 
 ## 为什么会牵一发动全身
 
